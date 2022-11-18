@@ -19,6 +19,8 @@ Pacman agents (in searchAgents.py).
 
 import util
 from util import Stack
+from util import Queue
+from util import PriorityQueue
 
 class SearchProblem:
     """
@@ -71,9 +73,9 @@ def tinyMazeSearch(problem):
     from game import Directions
     s = Directions.SOUTH
     w = Directions.WEST
-    print("Start:", problem.getStartState())
-    print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-    print("Start's successors:", problem.getSuccessors(problem.getStartState()))
+    # print("Start:", problem.getStartState())
+    # print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
+    # print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     return  [s, s, w, s, w, w, s, w]
 
 def depthFirstSearch(problem):
@@ -92,44 +94,75 @@ def depthFirstSearch(problem):
     """
     "*** YOUR CODE HERE ***"
     
-    print("Start:", problem.getStartState())
-    print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-    print("Start's successors:", problem.getSuccessors(problem.getStartState()))
+    # print("Start:", problem.getStartState())
+    # print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
+    # print("Start's successors:", problem.getSuccessors(problem.getStartState()))
 
-    open = Stack()
+    openList = Stack()
     visitedList = []
     path = []
-    open.push((problem.getStartState(), path))
+    openList.push((problem.getStartState(), path))
 
-    while not open.isEmpty():
-        currentNode = open.pop()
-        # 1 node sẽ có 3 artrib [0] là tọa độ, [1] là hướng, [2] là giá của đường đi
-        path = currentNode[1]
-        print(path)
-        if problem.isGoalState(currentNode[0]):
+    while not openList.isEmpty():
+        currentPosition, path = openList.pop()
+        if problem.isGoalState(currentPosition):
             return path
-        if (currentNode[0] not in visitedList):
-            visitedList.append(currentNode[0])
+        if (currentPosition not in visitedList):
+            visitedList.append(currentPosition)
         
         # Lấy các node lân cận với currentNode
-        successors = problem.getSuccessors(currentNode[0])
+        successors = problem.getSuccessors(currentPosition)
         for successor in successors:
             if successor[0] not in visitedList:
-                # print(path + [successor[1]] )
-                # print(successor[0])
-                # Lưu vết của đường đi path + successor[1]
-                open.push((successor[0], path + [successor[1]]))
+                openList.push((successor[0], path + [successor[1]]))
 
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
+
+    openList = Queue()
+    visitedList = []
+    path = []
+    openList.push((problem.getStartState(), path))
+
+    while not openList.isEmpty():
+        currentPosition, path = openList.pop()
+        if problem.isGoalState(currentPosition):
+            return path
+        if (currentPosition not in visitedList):
+            visitedList.append(currentPosition)
+        
+        # Lấy các node lân cận với currentNode
+        successors = problem.getSuccessors(currentPosition)
+        for successor in successors:
+            if successor[0] not in visitedList:
+                openList.push((successor[0], path + [successor[1]]))
+
     util.raiseNotDefined()
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first.."""
     "*** YOUR CODE HERE ***"
+
+    openList = PriorityQueue()
+    visitedList = []
+    path = []
+    openList.push((problem.getStartState(), path), 0)
+
+    while not openList.isEmpty():
+        currentPositon, path = openList.pop()
+        if problem.isGoalState(currentPositon):
+            return path
+        if currentPositon not in visitedList:
+            visitedList.append(currentPositon)
+        successors = problem.getSuccessors(currentPositon)
+        for successor in successors:
+            if (successor[0] not in visitedList):
+                actions = path + [successor[1]]
+                openList.push((successor[0], actions), problem.getCostOfActions(actions))
+
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
@@ -142,6 +175,25 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
+
+    openList = PriorityQueue()
+    visitedList = []
+    path = []
+    openList.push((problem.getStartState(), path), 0)
+
+    while not openList.isEmpty():
+        currentPositon, path = openList.pop()
+        if problem.isGoalState(currentPositon):
+            return path
+        if currentPositon not in visitedList:
+            visitedList.append(currentPositon)
+        successors = problem.getSuccessors(currentPositon)
+        for successor in successors:
+            if (successor[0] not in visitedList):
+                actions = path + [successor[1]]
+                openList.push((successor[0], actions), problem.getCostOfActions(actions) + heuristic(successor[0], problem))
+
+
     util.raiseNotDefined()
 
 
