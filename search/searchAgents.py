@@ -486,7 +486,23 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    foodPosition=foodGrid.asList()
+    # distance=[]
+    # if len(foodPosition) == 0:
+    #     return 0
+    # for x, y in foodPosition:
+    #     pos = (x,y)
+    #     distance.append(mazeDistance(position, pos, problem.startingGameState))
+    # return max(distance)
+
+    fcost=[0]*len(foodPosition)
+    if len(foodPosition)==0:                                                  #Here we are using the mazeDistance for finding the distance to food
+        return 0                                                         #and we are returning the max cost (Notation:It is taking 20 sec but)
+    for i in range(len(foodPosition)):                                        #it expands only 4100 and something nodes).We can do the same with
+        fcost[i]=mazeDistance(position,foodPosition[i],problem.startingGameState)   #the cornersheuristis using manhattanheuristic but for food and corners
+    Max=max(fcost)
+    return Max
+    # return 0
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
@@ -517,6 +533,8 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
+        return search.aStarSearch(problem) 
+    
         util.raiseNotDefined()
 
 class AnyFoodSearchProblem(PositionSearchProblem):
@@ -553,6 +571,15 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x,y = state
 
         "*** YOUR CODE HERE ***"
+        # _, goal = min([(util.manhattanDistance(state, goal), goal) for goal in self.food.asList()])
+        # if state == goal:
+        #     return True
+        # else:
+        #     return False
+        foodList=self.food.asList()
+        distance,food=min([(util.manhattanDistance(state,food),food)for food in foodList])
+        isGoal=state==food                                                                    #And in this function we examine if we are in goal state
+        return isGoal   
         util.raiseNotDefined()
 
 def mazeDistance(point1, point2, gameState):
