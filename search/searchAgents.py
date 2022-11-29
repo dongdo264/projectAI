@@ -40,6 +40,7 @@ from game import Actions
 import util
 import time
 import search
+from util import PriorityQueue
 
 class GoWestAgent(Agent):
     "An agent that goes West until it can't."
@@ -375,24 +376,32 @@ def cornersHeuristic(state, problem):
 
     "*** YOUR CODE HERE ***"
 
-    from util import PriorityQueue
-
-    now_pos, cor_visited = state
-    now_x, now_y = now_pos
-    value = 0  #the value would be return
-    cor_not = PriorityQueue()
+    # vi tri hien tai
+    currentPosition = state[0]
+    # cac corner da tham
+    corVisited = state[1]
+    # print(currentPosition, currentPosition)
+    now_x, now_y = currentPosition
+    # heuristic tinh toan bang cach tinh khoang cach ngan nhat tu currentposition den tat ca cac corners
+    res = 0  # Gia tri tra ve
+    corNotVisited = PriorityQueue()
   
-    for i in corners:
-        if i not in cor_visited:
-            x, y = i
-            cor_not.push(i, ((x - now_x)**2 + (y - now_y)**2)**0.5)
+    for corner in corners:
+        if corner not in corVisited:
+            cornerX = corner[0]
+            cornerY = corner[1]
+            distance = ((cornerX - now_x)**2 + (cornerY - now_y)**2)**0.5
+            corNotVisited.push(corner, distance)
   
-    while not cor_not.isEmpty():
-        x, y = cor_not.pop()
-        value += ((x - now_x)**2 + (y - now_y)**2)**0.5
-        now_x, now_y = x, y
+    while (not corNotVisited.isEmpty()):
+        corner = corNotVisited.pop()
+        cornerX, cornerY = corner
+        distance = ((cornerX - now_x)**2 + (cornerY - now_y)**2)**0.5
+        res += distance
+        now_x = cornerX
+        now_y = cornerY
 
-    return value
+    return res
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
