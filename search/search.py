@@ -98,20 +98,20 @@ def depthFirstSearch(problem):
     # print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     # print("Start's successors:", problem.getSuccessors(problem.getStartState()))
 
-    tree = Stack()
-    tree.push(((problem.getStartState()), []))
+    openList = Stack()
+    openList.push(((problem.getStartState()), []))
     visited = []
 
-    while(not tree.isEmpty()):
-        (state, path) = tree.pop()
+    while(not openList.isEmpty()):
+        (state, path) = openList.pop()
         if(problem.isGoalState(state)):
              break
 
         successors = problem.getSuccessors(state)
-        for i in successors:
-            if(i[0] not in visited):  # any state has been visited doesn't need to be visited again
-                visited.append(i[0])
-                tree.push((i[0], path + [i[1]]))
+        for successor in successors:
+            if(successor[0] not in visited):  
+                visited.append(successor[0])
+                openList.push((successor[0], path + [successor[1]]))
 
     return path
 
@@ -119,20 +119,20 @@ def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
 
-    tree = Queue()
-    tree.push(((problem.getStartState()), []))
+    openList = Queue()
+    openList.push(((problem.getStartState()), []))
     visited = []
 
-    while(not tree.isEmpty()):
-        (state, path) = tree.pop()
+    while(not openList.isEmpty()):
+        (state, path) = openList.pop()
         if(problem.isGoalState(state)):
              break
-
         successors = problem.getSuccessors(state)
-        for i in successors:
-            if(i[0] not in visited):  # any state has been visited doesn't need to be visited again
-                visited.append(i[0])
-                tree.push((i[0], path + [i[1]]))
+        for successor in successors:
+            if(successor[0] not in visited):  
+                visited.append(successor[0])
+                openList.push((successor[0], path + [successor[1]]))
+
     return path
 
 def uniformCostSearch(problem):
