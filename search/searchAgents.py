@@ -382,23 +382,12 @@ def cornersHeuristic(state, problem):
     corVisited = state[1]
     # print(currentPosition, currentPosition)
     now_x, now_y = currentPosition
-    # heuristic tinh toan bang cach tinh khoang cach ngan nhat tu currentposition khi ăn tát ca cac corners
+    # heuristic tinh toan bang cach tinh tong khoang cach ngan nhat tu currentposition khi ăn tát ca cac corners
     res = 0  # Gia tri tra ve
-    corNotVisited = PriorityQueue()
-  
     for corner in corners:
         if corner not in corVisited:
             cornerX, cornerY = corner
-            distance = ((cornerX - now_x)**2 + (cornerY - now_y)**2)**0.5
-            corNotVisited.push(corner, distance)
-  
-    while (not corNotVisited.isEmpty()):
-        corner = corNotVisited.pop()
-        cornerX, cornerY = corner
-        distance = ((cornerX - now_x)**2 + (cornerY - now_y)**2)**0.5
-        res += distance
-        now_x = cornerX
-        now_y = cornerY
+            res += ((cornerX - now_x)**2 + (cornerY - now_y)**2)**0.5
     return res
 
 class AStarCornersAgent(SearchAgent):
